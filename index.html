@@ -2,53 +2,60 @@
 <html>
 <head>
 <meta charset="UTF-8">
-<title>Матриц бодлогын сайт</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Матриц бодлого</title>
 
 <style>
 
+*{
+box-sizing:border-box;
+}
+
 body{
-font-family:Arial;
-background:linear-gradient(135deg,#4facfe,#00f2fe);
 margin:0;
-display:flex;
-justify-content:center;
-align-items:center;
-height:100vh;
+font-family:Arial, sans-serif;
+background:linear-gradient(135deg,#4facfe,#00f2fe);
 }
 
+/* FULL SCREEN */
 .container{
-background:white;
-width:720px;
-padding:25px;
-border-radius:12px;
-box-shadow:0 10px 25px rgba(0,0,0,0.2);
+width:100%;
+min-height:100vh;
+padding:15px;
 }
 
+/* CARD */
+.card{
+background:white;
+width:100%;
+min-height:100%;
+border-radius:12px;
+padding:20px;
+box-shadow:0 5px 15px rgba(0,0,0,0.2);
+}
+
+/* NAV */
 nav{
-text-align:center;
+display:flex;
+gap:10px;
 margin-bottom:15px;
 }
 
 nav button{
-margin:5px;
-padding:10px 20px;
+flex:1;
+padding:12px;
+font-size:16px;
 border:none;
 background:#4facfe;
 color:white;
-border-radius:6px;
-cursor:pointer;
+border-radius:8px;
 }
 
-nav button:hover{
-background:#2d8cf0;
-}
-
-.page{
-display:none;
-}
-
-.active{
-display:block;
+/* TEXT */
+h2{
+text-align:center;
+font-size:22px;
 }
 
 .problem{
@@ -58,27 +65,40 @@ margin-bottom:15px;
 
 input{
 width:100%;
-padding:10px;
-font-size:16px;
-border-radius:6px;
+padding:14px;
+font-size:18px;
+border-radius:8px;
 border:1px solid #ccc;
 }
 
-button.next{
+/* BUTTON */
+button.main{
 width:100%;
+padding:14px;
 margin-top:10px;
-padding:10px;
+font-size:18px;
 background:#4facfe;
 color:white;
 border:none;
-border-radius:6px;
+border-radius:8px;
 }
 
+/* EXAMPLES */
 .example{
 background:#f7f7f7;
-padding:10px;
+padding:12px;
 border-left:5px solid #4facfe;
 margin-bottom:12px;
+font-size:16px;
+}
+
+/* PAGE */
+.page{
+display:none;
+}
+
+.active{
+display:block;
 }
 
 </style>
@@ -87,13 +107,14 @@ margin-bottom:12px;
 <body>
 
 <div class="container">
+<div class="card">
 
 <nav>
-<button onclick="showPage('learn')">Матриц сурах</button>
-<button onclick="showPage('quiz')">Бодлого бодох</button>
+<button onclick="showPage('learn')">Сурах</button>
+<button onclick="showPage('quiz')">Бодлого</button>
 </nav>
 
-<!-- СУРАХ ХЭСЭГ -->
+<!-- СУРАХ -->
 
 <div id="learn" class="page active">
 
@@ -102,19 +123,18 @@ margin-bottom:12px;
 <div class="example">
 <b>Матриц нэмэх</b><br>
 A = [1 2]<br>
-&nbsp;&nbsp;&nbsp;&nbsp;[3 4]<br>
+[3 4]<br>
 B = [5 6]<br>
-&nbsp;&nbsp;&nbsp;&nbsp;[7 8]<br><br>
+[7 8]<br><br>
 
 A + B = [6 8]<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[10 12]
+[10 12]
 </div>
 
 <div class="example">
-<b>Матриц транспоз</b><br>
-
+<b>Транспоз</b><br>
 A = [1 2]<br>
-&nbsp;&nbsp;&nbsp;&nbsp;[3 4]<br><br>
+[3 4]<br><br>
 
 Aᵀ =<br>
 [1 3]<br>
@@ -122,61 +142,55 @@ Aᵀ =<br>
 </div>
 
 <div class="example">
-<b>2×2 матрицын детерминант</b><br>
-
+<b>Детерминант</b><br>
 |a b|<br>
-|c d|<br><br>
-
+|c d|<br>
 det = ad − bc
 </div>
 
 </div>
 
-<!-- БОДЛОГЫН ХЭСЭГ -->
+<!-- БОДЛОГО -->
 
 <div id="quiz" class="page">
 
-<h2>Матрицын бодлого</h2>
+<h2>Матриц бодлого</h2>
 
 <div class="problem" id="problem"></div>
 
-<input id="answer" placeholder="Хариугаа бичнэ үү">
+<input id="answer" placeholder="Хариугаа бич">
 
-<button class="next" onclick="nextProblem()">Хариу илгээх</button>
+<button class="main" onclick="nextProblem()">Илгээх</button>
 
 </div>
 
+</div>
 </div>
 
 <script>
 
 function showPage(page){
-
-document.querySelectorAll(".page").forEach(p=>{
-p.classList.remove("active")
-})
-
+document.querySelectorAll(".page").forEach(p=>p.classList.remove("active"))
 document.getElementById(page).classList.add("active")
-
 }
 
 const problems=[
 
-{q:"|1 2; 3 4| матрицын детерминант хэд вэ?",a:"-2"},
-{q:"|2 3; 1 4| матрицын детерминант хэд вэ?",a:"5"},
-{q:"|5 1; 2 3| матрицын детерминант хэд вэ?",a:"13"},
-{q:"[1 2; 3 4] матрицын транспозын 1-р мөр 2-р баганын элемент хэд вэ?",a:"3"},
-{q:"[5 7; 2 6] матрицын транспозын 2-р мөр 1-р баганын элемент хэд вэ?",a:"7"},
-{q:"A=[1 2;3 4], B=[5 6;7 8] бол A+B матрицын 1-р мөр 1-р баганын элемент?",a:"6"},
-{q:"A=[1 2;3 4], B=[5 6;7 8] бол A+B матрицын 2-р мөр 2-р баганын элемент?",a:"12"},
-{q:"[1 2;3 4] матриц хэдэн мөртэй вэ?",a:"2"},
-{q:"[1 2;3 4] матриц хэдэн баганатай вэ?",a:"2"},
-{q:"|3 2;1 5| матрицын детерминант?",a:"13"},
-{q:"|4 1;2 3| матрицын детерминант?",a:"10"},
-{q:"[8 9;4 2] матрицын транспозын 1-р мөр 2-р баганын элемент?",a:"4"},
-{q:"[8 9;4 2] матрицын транспозын 2-р мөр 1-р баганын элемент?",a:"9"},
-{q:"A=[2 2;2 2] бол A+A матрицын 1-р мөр 1-р баганын элемент?",a:"4"},
-{q:"A=[2 2;2 2] бол A+A матрицын 2-р мөр 2-р баганын элемент?",a:"4"}
+{q:"|1 2; 3 4| детерминант?",a:"-2"},
+{q:"|2 3; 1 4| детерминант?",a:"5"},
+{q:"|5 1; 2 3| детерминант?",a:"13"},
+{q:"[1 2; 3 4] транспозын (1,2)?",a:"3"},
+{q:"[5 7; 2 6] транспозын (2,1)?",a:"7"},
+{q:"A+B (1,1)? A=[1 2;3 4], B=[5 6;7 8]",a:"6"},
+{q:"A+B (2,2)? A=[1 2;3 4], B=[5 6;7 8]",a:"12"},
+{q:"[1 2;3 4] мөр хэд вэ?",a:"2"},
+{q:"[1 2;3 4] багана хэд вэ?",a:"2"},
+{q:"|3 2;1 5| детерминант?",a:"13"},
+{q:"|4 1;2 3| детерминант?",a:"10"},
+{q:"[8 9;4 2] транспоз (1,2)?",a:"4"},
+{q:"[8 9;4 2] транспоз (2,1)?",a:"9"},
+{q:"A+A (1,1)? A=[2 2;2 2]",a:"4"},
+{q:"A+A (2,2)? A=[2 2;2 2]",a:"4"}
 
 ]
 
@@ -186,12 +200,9 @@ let score=0
 let points=0
 
 function loadProblem(){
-
 document.getElementById("problem").innerText =
 (current+1)+". "+shuffled[current].q
-
 document.getElementById("answer").value=""
-
 }
 
 function nextProblem(){
@@ -199,7 +210,7 @@ function nextProblem(){
 let user=document.getElementById("answer").value.trim()
 
 if(user===""){
-alert("Хариугаа оруулна уу")
+alert("Хариу оруул")
 return
 }
 
@@ -216,8 +227,8 @@ loadProblem()
 
 document.getElementById("quiz").innerHTML=
 "<h2>Дууслаа</h2>"+
-"<p>Зөв бодсон: "+score+" / 15</p>"+
-"<p>Нийт оноо: "+points+"</p>"+
+"<p>"+score+" / 15 зөв</p>"+
+"<p>Оноо: "+points+"</p>"+
 "<button onclick='location.reload()'>Дахин эхлэх</button>"
 
 }
