@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html>
+<html lang="mn">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -14,82 +14,58 @@ box-sizing:border-box;
 
 body{
 margin:0;
-font-family:Arial, sans-serif;
-background:linear-gradient(135deg,#4facfe,#00f2fe);
+font-family: 'Segoe UI', sans-serif;
+background:#0f172a;
+color:#e2e8f0;
 }
 
-/* FULL SCREEN */
+/* CONTAINER */
 .container{
 width:100%;
 min-height:100vh;
-padding:15px;
+padding:20px;
+display:flex;
+justify-content:center;
+align-items:flex-start;
 }
 
 /* CARD */
 .card{
-background:white;
 width:100%;
-min-height:100%;
-border-radius:12px;
-padding:20px;
-box-shadow:0 5px 15px rgba(0,0,0,0.2);
+max-width:900px;
+background:#1e293b;
+border-radius:16px;
+padding:25px;
+box-shadow:0 10px 30px rgba(0,0,0,0.5);
 }
 
 /* NAV */
 nav{
 display:flex;
 gap:10px;
-margin-bottom:15px;
+margin-bottom:20px;
 }
 
 nav button{
 flex:1;
 padding:12px;
-font-size:16px;
+font-size:15px;
 border:none;
-background:#4facfe;
-color:white;
-border-radius:8px;
+background:#334155;
+color:#e2e8f0;
+border-radius:10px;
+cursor:pointer;
+transition:0.2s;
 }
 
-/* TEXT */
+nav button:hover{
+background:#3b82f6;
+}
+
+/* TITLE */
 h2{
 text-align:center;
-font-size:22px;
-}
-
-.problem{
-font-size:20px;
-margin-bottom:15px;
-}
-
-input{
-width:100%;
-padding:14px;
-font-size:18px;
-border-radius:8px;
-border:1px solid #ccc;
-}
-
-/* BUTTON */
-button.main{
-width:100%;
-padding:14px;
-margin-top:10px;
-font-size:18px;
-background:#4facfe;
-color:white;
-border:none;
-border-radius:8px;
-}
-
-/* EXAMPLES */
-.example{
-background:#f7f7f7;
-padding:12px;
-border-left:5px solid #4facfe;
-margin-bottom:12px;
-font-size:16px;
+margin-bottom:20px;
 }
 
 /* PAGE */
@@ -99,6 +75,69 @@ display:none;
 
 .active{
 display:block;
+}
+
+/* IMAGE GRID */
+.gallery{
+display:grid;
+grid-template-columns:repeat(auto-fit,minmax(250px,1fr));
+gap:15px;
+}
+
+.gallery img{
+width:100%;
+border-radius:12px;
+transition:0.3s;
+cursor:pointer;
+}
+
+.gallery img:hover{
+transform:scale(1.05);
+}
+
+/* QUIZ */
+.question{
+margin-bottom:18px;
+padding:12px;
+background:#0f172a;
+border-radius:10px;
+}
+
+.question p{
+margin:0 0 8px;
+}
+
+input{
+width:100%;
+padding:10px;
+border-radius:8px;
+border:none;
+background:#1e293b;
+color:white;
+}
+
+/* BUTTON */
+button.main{
+width:100%;
+padding:14px;
+margin-top:15px;
+font-size:16px;
+background:#3b82f6;
+border:none;
+border-radius:10px;
+color:white;
+cursor:pointer;
+}
+
+button.main:hover{
+background:#2563eb;
+}
+
+/* RESULT */
+.result{
+margin-top:20px;
+text-align:center;
+font-size:18px;
 }
 
 </style>
@@ -114,53 +153,30 @@ display:block;
 <button onclick="showPage('quiz')">Бодлого</button>
 </nav>
 
-<!-- СУРАХ -->
+<!-- LEARN (MULTIPLE IMAGES) -->
 
 <div id="learn" class="page active">
 
-<h2>Матрицын жишээ</h2>
+<h2>Матрицын тайлбар</h2>
 
-<div class="example">
-<b>Матриц нэмэх</b><br>
-A = [1 2]<br>
-[3 4]<br>
-B = [5 6]<br>
-[7 8]<br><br>
-
-A + B = [6 8]<br>
-[10 12]
-</div>
-
-<div class="example">
-<b>Транспоз</b><br>
-A = [1 2]<br>
-[3 4]<br><br>
-
-Aᵀ =<br>
-[1 3]<br>
-[2 4]
-</div>
-
-<div class="example">
-<b>Детерминант</b><br>
-|a b|<br>
-|c d|<br>
-det = ad − bc
+<div class="gallery">
+<img src="e77472fa-9b62-4870-acab-aadc3390a72f (1)(1).png" alt="">
+<img src="e77472fa-9b62-4870-acab-aadc3390a72f (2)(1).png" alt="">
 </div>
 
 </div>
 
-<!-- БОДЛОГО -->
+<!-- QUIZ -->
 
 <div id="quiz" class="page">
 
 <h2>Матриц бодлого</h2>
 
-<div class="problem" id="problem"></div>
+<div id="questions"></div>
 
-<input id="answer" placeholder="Хариугаа бич">
+<button class="main" onclick="checkAnswers()">Бүгдийг шалгах</button>
 
-<button class="main" onclick="nextProblem()">Илгээх</button>
+<div class="result" id="result"></div>
 
 </div>
 
@@ -194,48 +210,47 @@ const problems=[
 
 ]
 
-let shuffled=problems.sort(()=>Math.random()-0.5)
-let current=0
-let score=0
-let points=0
+let shuffled = problems.sort(()=>Math.random()-0.5)
 
-function loadProblem(){
-document.getElementById("problem").innerText =
-(current+1)+". "+shuffled[current].q
-document.getElementById("answer").value=""
+function loadQuestions(){
+
+let container = document.getElementById("questions")
+
+shuffled.forEach((p,index)=>{
+
+container.innerHTML += `
+<div class="question">
+<p>${index+1}. ${p.q}</p>
+<input id="q${index}" placeholder="Хариу бич">
+</div>
+`
+
+})
+
 }
 
-function nextProblem(){
+function checkAnswers(){
 
-let user=document.getElementById("answer").value.trim()
+let score = 0
+let points = 0
 
-if(user===""){
-alert("Хариу оруул")
-return
-}
+shuffled.forEach((p,index)=>{
 
-if(user==shuffled[current].a){
+let user = document.getElementById("q"+index).value.trim()
+
+if(user === p.a){
 score++
-points+=10
+points += 10
 }
 
-current++
+})
 
-if(current<shuffled.length){
-loadProblem()
-}else{
-
-document.getElementById("quiz").innerHTML=
-"<h2>Дууслаа</h2>"+
-"<p>"+score+" / 15 зөв</p>"+
-"<p>Оноо: "+points+"</p>"+
-"<button onclick='location.reload()'>Дахин эхлэх</button>"
+document.getElementById("result").innerHTML =
+`Зөв: ${score} / 15 <br> Оноо: ${points}`
 
 }
 
-}
-
-loadProblem()
+loadQuestions()
 
 </script>
 
