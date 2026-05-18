@@ -14,7 +14,7 @@ box-sizing:border-box;
 
 body{
 margin:0;
-font-family: 'Segoe UI', sans-serif;
+font-family:'Segoe UI',sans-serif;
 background:#0f172a;
 color:#e2e8f0;
 }
@@ -32,7 +32,7 @@ align-items:flex-start;
 /* CARD */
 .card{
 width:100%;
-max-width:900px;
+max-width:950px;
 background:#1e293b;
 border-radius:16px;
 padding:25px;
@@ -92,28 +92,40 @@ cursor:pointer;
 }
 
 .gallery img:hover{
-transform:scale(1.05);
+transform:scale(1.03);
 }
 
-/* QUIZ */
+/* QUESTION */
 .question{
-margin-bottom:18px;
-padding:12px;
+margin-bottom:20px;
+padding:15px;
 background:#0f172a;
-border-radius:10px;
+border-radius:12px;
 }
 
 .question p{
-margin:0 0 8px;
+font-size:17px;
+margin-bottom:12px;
+line-height:1.6;
 }
 
-input{
-width:100%;
+/* OPTIONS */
+.option{
+display:block;
 padding:10px;
-border-radius:8px;
-border:none;
+margin-bottom:8px;
 background:#1e293b;
-color:white;
+border-radius:8px;
+cursor:pointer;
+transition:0.2s;
+}
+
+.option:hover{
+background:#334155;
+}
+
+.option input{
+margin-right:8px;
 }
 
 /* BUTTON */
@@ -127,6 +139,7 @@ border:none;
 border-radius:10px;
 color:white;
 cursor:pointer;
+transition:0.2s;
 }
 
 button.main:hover{
@@ -137,7 +150,44 @@ background:#2563eb;
 .result{
 margin-top:20px;
 text-align:center;
+font-size:20px;
+font-weight:bold;
+}
+
+/* MATRIX STYLE */
+.matrix{
+display:inline-block;
+position:relative;
+padding:10px 18px;
+margin:0 5px;
+font-family:monospace;
 font-size:18px;
+line-height:1.8;
+vertical-align:middle;
+}
+
+.matrix:before{
+content:"";
+position:absolute;
+left:0;
+top:0;
+height:100%;
+width:10px;
+border-left:3px solid white;
+border-top:3px solid white;
+border-bottom:3px solid white;
+}
+
+.matrix:after{
+content:"";
+position:absolute;
+right:0;
+top:0;
+height:100%;
+width:10px;
+border-right:3px solid white;
+border-top:3px solid white;
+border-bottom:3px solid white;
 }
 
 </style>
@@ -153,15 +203,15 @@ font-size:18px;
 <button onclick="showPage('quiz')">Бодлого</button>
 </nav>
 
-<!-- LEARN (MULTIPLE IMAGES) -->
+<!-- LEARN -->
 
 <div id="learn" class="page active">
 
 <h2>Матрицын тайлбар</h2>
 
 <div class="gallery">
-<img src="e77472fa-9b62-4870-acab-aadc3390a72f (1)(1).png" alt="">
-<img src="e77472fa-9b62-4870-acab-aadc3390a72f (2)(1).png" alt="">
+<img src="e77472fa-9b62-4870-acab-aadc3390a72f (1)(1).png">
+<img src="e77472fa-9b62-4870-acab-aadc3390a72f (2)(1).png">
 </div>
 
 </div>
@@ -174,7 +224,9 @@ font-size:18px;
 
 <div id="questions"></div>
 
-<button class="main" onclick="checkAnswers()">Бүгдийг шалгах</button>
+<button class="main" onclick="checkAnswers()">
+Бүгдийг шалгах
+</button>
 
 <div class="result" id="result"></div>
 
@@ -186,31 +238,212 @@ font-size:18px;
 <script>
 
 function showPage(page){
-document.querySelectorAll(".page").forEach(p=>p.classList.remove("active"))
+document.querySelectorAll(".page").forEach(p =>
+p.classList.remove("active"))
 document.getElementById(page).classList.add("active")
 }
 
-const problems=[
+const problems = [
 
-{q:"|1 2; 3 4| детерминант?",a:"-2"},
-{q:"|2 3; 1 4| детерминант?",a:"5"},
-{q:"|5 1; 2 3| детерминант?",a:"13"},
-{q:"[1 2; 3 4] транспозын (1,2)?",a:"3"},
-{q:"[5 7; 2 6] транспозын (2,1)?",a:"7"},
-{q:"A+B (1,1)? A=[1 2;3 4], B=[5 6;7 8]",a:"6"},
-{q:"A+B (2,2)? A=[1 2;3 4], B=[5 6;7 8]",a:"12"},
-{q:"[1 2;3 4] мөр хэд вэ?",a:"2"},
-{q:"[1 2;3 4] багана хэд вэ?",a:"2"},
-{q:"|3 2;1 5| детерминант?",a:"13"},
-{q:"|4 1;2 3| детерминант?",a:"10"},
-{q:"[8 9;4 2] транспоз (1,2)?",a:"4"},
-{q:"[8 9;4 2] транспоз (2,1)?",a:"9"},
-{q:"A+A (1,1)? A=[2 2;2 2]",a:"4"},
-{q:"A+A (2,2)? A=[2 2;2 2]",a:"4"}
+{
+q:`<span class="matrix">
+1 2<br>
+3 4
+</span>
++
+<span class="matrix">
+5 6<br>
+7 8
+</span>
+матрицын (1,1)-г ол.`,
+options:["5","6","7","8"],
+a:"6"
+},
+
+{
+q:`<span class="matrix">
+9 8<br>
+7 6
+</span>
+-
+<span class="matrix">
+1 2<br>
+3 4
+</span>
+матрицын (2,2)-г ол.`,
+options:["1","2","3","4"],
+a:"2"
+},
+
+{
+q:`<span class="matrix">
+2 0<br>
+1 3
+</span>
+×
+<span class="matrix">
+1 2<br>
+4 1
+</span>
+матрицын (1,1)-г ол.`,
+options:["2","4","6","8"],
+a:"2"
+},
+
+{
+q:`<span class="matrix">
+2 1<br>
+0 3
+</span>
+×
+<span class="matrix">
+4 2<br>
+1 5
+</span>
+матрицын (1,2)-г ол.`,
+options:["7","8","9","10"],
+a:"9"
+},
+
+{
+q:`<span class="matrix">
+5 4<br>
+3 2
+</span>
+матрицын детерминант хэд вэ?`,
+options:["-4","-2","2","4"],
+a:"-2"
+},
+
+{
+q:`<span class="matrix">
+1 2<br>
+3 4
+</span>
+матрицын транспозын (2,1)-г ол.`,
+options:["1","2","3","4"],
+a:"2"
+},
+
+{
+q:`<span class="matrix">
+7 5<br>
+2 1
+</span>
++
+<span class="matrix">
+1 1<br>
+1 1
+</span>
+матрицын (2,1)-г ол.`,
+options:["2","3","4","5"],
+a:"3"
+},
+
+{
+q:`<span class="matrix">
+8 7<br>
+6 5
+</span>
+-
+<span class="matrix">
+2 1<br>
+3 4
+</span>
+матрицын (1,2)-г ол.`,
+options:["4","5","6","7"],
+a:"6"
+},
+
+{
+q:`<span class="matrix">
+1 2<br>
+3 4
+</span>
+×
+<span class="matrix">
+2 0<br>
+1 2
+</span>
+матрицын (2,2)-г ол.`,
+options:["6","7","8","9"],
+a:"8"
+},
+
+{
+q:`<span class="matrix">
+3 1<br>
+2 5
+</span>
+матриц хэдэн мөртэй вэ?`,
+options:["1","2","3","4"],
+a:"2"
+},
+
+{
+q:`<span class="matrix">
+3 1<br>
+2 5
+</span>
+матриц хэдэн баганатай вэ?`,
+options:["1","2","3","4"],
+a:"2"
+},
+
+{
+q:`<span class="matrix">
+6 2<br>
+1 4
+</span>
+матрицын детерминант хэд вэ?`,
+options:["20","22","24","26"],
+a:"22"
+},
+
+{
+q:`<span class="matrix">
+2 3<br>
+4 5
+</span>
+матрицын транспозын (1,2)-г ол.`,
+options:["2","3","4","5"],
+a:"4"
+},
+
+{
+q:`<span class="matrix">
+1 1<br>
+1 1
+</span>
++
+<span class="matrix">
+2 2<br>
+2 2
+</span>
+матрицын (2,2)-г ол.`,
+options:["2","3","4","5"],
+a:"3"
+},
+
+{
+q:`<span class="matrix">
+10 8<br>
+6 4
+</span>
+-
+<span class="matrix">
+1 2<br>
+3 1
+</span>
+матрицын (1,1)-г ол.`,
+options:["7","8","9","10"],
+a:"9"
+}
 
 ]
 
-let shuffled = problems.sort(()=>Math.random()-0.5)
+
+let shuffled = problems.sort(() => Math.random() - 0.5)
 
 function loadQuestions(){
 
@@ -218,10 +451,23 @@ let container = document.getElementById("questions")
 
 shuffled.forEach((p,index)=>{
 
+let optionsHTML = ""
+
+p.options.forEach(option=>{
+
+optionsHTML += `
+<label class="option">
+<input type="radio" name="q${index}" value="${option}">
+${option}
+</label>
+`
+
+})
+
 container.innerHTML += `
 <div class="question">
 <p>${index+1}. ${p.q}</p>
-<input id="q${index}" placeholder="Хариу бич">
+${optionsHTML}
 </div>
 `
 
@@ -236,9 +482,10 @@ let points = 0
 
 shuffled.forEach((p,index)=>{
 
-let user = document.getElementById("q"+index).value.trim()
+let selected =
+document.querySelector(`input[name="q${index}"]:checked`)
 
-if(user === p.a){
+if(selected && selected.value === p.a){
 score++
 points += 10
 }
@@ -246,7 +493,11 @@ points += 10
 })
 
 document.getElementById("result").innerHTML =
-`Зөв: ${score} / 15 <br> Оноо: ${points}`
+`
+Зөв хариулт: ${score} / ${shuffled.length}
+<br>
+Оноо: ${points}
+`
 
 }
 
